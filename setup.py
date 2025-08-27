@@ -6,6 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[  
         'tensorflow>=2.0',
+        'flwr>=1.12.0'
     ],
     description="A custom model with an autoencoder and attention mechanism",
     long_description=open('README.md').read(),
