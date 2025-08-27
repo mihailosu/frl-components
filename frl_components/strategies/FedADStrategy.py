@@ -5,10 +5,10 @@ from flwr.common import FitRes, Parameters, Scalar
 from flwr.server.client_proxy import ClientProxy
 from scipy.spatial.distance import cdist
 
-from frl_components.data import Loader
+from ..data import Loader
 from sklearn.metrics import roc_auc_score
 
-from frl_components.models.util import persist_model
+from ..models.util import persist_model
 from .validation import persist_validation_results, validate_autoencoder
 
 class FedADStrategy(fl.server.strategy.FedProx):
