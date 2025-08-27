@@ -1,6 +1,8 @@
 import tensorflow as tf
 from tf_keras import layers
+from tensorflow.keras.utils import register_keras_serializable
 
+@register_keras_serializable()
 class MemoryLayer(layers.Layer):
 
     def __init__(self, memory_dim, encoding_dim=None, lambda_cutoff=None, **kwargs):
@@ -82,3 +84,13 @@ class MemoryLayer(layers.Layer):
 
     def get_memory(self):
         return self.memory.numpy()
+    
+
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            "memory_dim": self.memory_dim,
+            "encoding_dim": self.encoding_dim,
+            "lambda_cutoff": self.lambda_cutoff,
+        })
+        return config

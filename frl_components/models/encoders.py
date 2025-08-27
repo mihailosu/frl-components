@@ -7,7 +7,7 @@ from tensorflow.keras.saving import register_keras_serializable
 @register_keras_serializable()
 class MemoryAutoencoder(Model):
 
-    def __init__(self, memory_dim=None, encoding_dim=None, lambda_cutoff=None, layer_strat='power'):
+    def __init__(self, memory_dim=None, encoding_dim=None, lambda_cutoff=None, layer_strat='power', **kwargs):
         super(MemoryAutoencoder, self).__init__()
 
         self.memory_dim = memory_dim if memory_dim else 32
@@ -114,63 +114,14 @@ class MemoryAutoencoder(Model):
     def get_memory(self):
         return self.memory.get_memory()
     
-
-@register_keras_serializable()
-class Autoencoder(Model):
-
-    def __init__(self, encoding_dim=None, n_layers=None):
-        super(Autoencoder, self).__init__()
-
-        self.encoding_dim = encoding_dim
-        self.n_layers = n_layers
+    def get_config(self):
+        base_config = super().get_config()
+        custom_config = {
+            "memory_dim": self.memory_dim,
+            "encoding_dim": self.encoding_dim,
+            "lambda_cutoff": self.lambda_cutoff,
+            "layer_strat": self.layer_strat,
+        }
+        return {**base_config, **custom_config}
 
     
-    def _set_default_autoencoder(self, input_shape):
-
-        input_dim = input_shape[-1]
-
-        self.encoder = Sequential([
-            layers.Dense(self.encoding_dim, activation='relu', input_shape=(input_dim,)) 
-        ])
-
-        self.decoder = Sequential([
-            layers.Dense(input_dim, activation='relu') 
-        ])
-
-        # return Sequential([
-        #     layers.Dense(self.encoding_dim, activation='relu', input_shape=(input_dim,)),
-        #     layers.Dense(input_dim, activation='relu')
-        # ])
-
-
-    def build(self, input_shape):
-        self.input_dim = input_shape[-1]
-        
-        if self.n_layers is None:
-            self._set_default_autoencoder(input_shape)
-            return
-
-        self.encoder = Sequential([
-            layers.Dense(128, activation='relu', input_shape=(self.input_dim, )),
-            layers.Dense(64, activation='relu'),
-            layers.Dense(self.encoding_dim, activation='relu', input_shape=(self.input_dim,))
-        ])
-
-        self.decoder = Sequential([
-            layers.Dense(64, activation='relu', input_shape=(self.encoding_dim, )),
-            layers.Dense(128, activation='relu'),
-            layers.Dense(self.input_dim, activation='relu')
-        ])
-
-    def call(self, inputs):
-        encoded = self.encoder(inputs)
-        decoded = self.decoder(encoded)
-        return decoded
-
-
-    def encode(self, inputs):
-        return self.encoder(inputs)
-
-
-    def decode(self, inputs):
-        return self.decoder(inputs)
