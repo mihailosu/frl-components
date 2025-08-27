@@ -1,14 +1,13 @@
 import flwr as fl
 import numpy as np
 from typing import List, Tuple, Dict, Optional
-from ..models import MemoryAutoencoder, Autoencoder
 import tf_keras
 
 from .training import train 
 
 class FedADClient(fl.client.NumPyClient):
     def __init__(self, model=None, x_train=None, local_epochs=1, batch_size=5, learning_rate=0.001):
-        self.model: MemoryAutoencoder | Autoencoder = model
+        self.model = model
         self.x_train = x_train
 
         self.local_epochs = local_epochs
