@@ -1,0 +1,3 @@
+# Federated Aggregation Strategies for Attention-based Autoencoders
+
+Work in progress...
