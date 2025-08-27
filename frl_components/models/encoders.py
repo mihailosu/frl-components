@@ -5,7 +5,7 @@ from ..layers.Memory import MemoryLayer
 from tensorflow.keras.saving import register_keras_serializable
 
 @register_keras_serializable()
-class MemoryAutoencoder(Model):
+class MemoryAutoencoder(tf.keras.Model):
 
     def __init__(self, memory_dim=None, encoding_dim=None, lambda_cutoff=None, layer_strat='power', **kwargs):
         super(MemoryAutoencoder, self).__init__()
