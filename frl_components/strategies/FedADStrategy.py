@@ -5,7 +5,6 @@ from flwr.common import FitRes, Parameters, Scalar
 from flwr.server.client_proxy import ClientProxy
 from scipy.spatial.distance import cdist
 
-from ..data import Loader
 from sklearn.metrics import roc_auc_score
 
 from ..models.util import persist_model
@@ -16,7 +15,7 @@ class FedADStrategy(fl.server.strategy.FedProx):
     '''
 
 
-    def __init__(self, data_loader: Loader, model_generator_fn, memory_aggregation_method=None, *args, **kwargs):
+    def __init__(self, data_loader, model_generator_fn, memory_aggregation_method=None, *args, **kwargs):
         '''
         
         Params:
