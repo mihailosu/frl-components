@@ -2,7 +2,9 @@
 import tensorflow as tf
 from tf_keras import layers, Sequential, Model
 from ..layers.Memory import MemoryLayer
+from tensorflow.keras.saving import register_keras_serializable
 
+@register_keras_serializable()
 class MemoryAutoencoder(Model):
 
     def __init__(self, memory_dim=None, encoding_dim=None, lambda_cutoff=None, layer_strat='power'):
@@ -113,6 +115,7 @@ class MemoryAutoencoder(Model):
         return self.memory.get_memory()
     
 
+@register_keras_serializable()
 class Autoencoder(Model):
 
     def __init__(self, encoding_dim=None, n_layers=None):

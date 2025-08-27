@@ -1,7 +1,7 @@
 import flwr as fl
 import numpy as np
 from typing import List, Tuple, Dict, Optional
-from src.models import MemoryAutoencoder, Autoencoder
+from ..models import MemoryAutoencoder, Autoencoder
 import tf_keras
 
 from .training import train 
