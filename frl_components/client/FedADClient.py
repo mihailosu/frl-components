@@ -1,7 +1,7 @@
 import flwr as fl
 import numpy as np
 from typing import List, Tuple, Dict, Optional
-import tf_keras
+import tensorflow as tf
 
 from .training import train 
 
@@ -19,7 +19,7 @@ class FedADClient(fl.client.NumPyClient):
         track of the variables created by the model it seems, and cannot
         run backpropagation for some reason.
         '''
-        self.optimizer = tf_keras.optimizers.Adam(learning_rate, weight_decay=1e-4)
+        self.optimizer = tf.keras.optimizers.Adam(learning_rate, weight_decay=1e-4)
 
 
     def get_parameters(self, config):

@@ -1,5 +1,6 @@
 import tensorflow as tf
-from tf_keras import layers
+# from tf_keras import layers
+from tensorflow.keras import layers
 from tensorflow.keras.utils import register_keras_serializable
 
 @register_keras_serializable()

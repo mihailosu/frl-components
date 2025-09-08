@@ -1,6 +1,6 @@
 
 import tensorflow as tf
-from tf_keras import layers, Sequential, Model
+from tensorflow.keras import layers, Sequential, Model 
 from ..layers.Memory import MemoryLayer
 from tensorflow.keras.saving import register_keras_serializable
 
