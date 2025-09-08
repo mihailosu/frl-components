@@ -54,7 +54,6 @@ class MemoryLayer(layers.Layer):
         return output, w
 
 
-    @tf.function
     def _compute_cosine_distance(self, inputs, memory):
         '''
         Computes the cosine distance between the input vectors and the memory vectors.
