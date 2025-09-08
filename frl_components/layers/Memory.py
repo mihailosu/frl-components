@@ -84,7 +84,7 @@ class MemoryLayer(layers.Layer):
 
 
     def get_memory(self):
-        return self.memory.numpy()
+        return self.memory
     
 
     def get_config(self):
