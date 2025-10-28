@@ -22,3 +22,6 @@ data/
 !src/data
 
 .vscode/
+
+**.swo
+**.swp
