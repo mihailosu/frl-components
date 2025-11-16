@@ -1,4 +1,4 @@
-
+import warnings
 import tensorflow as tf
 
 @tf.function
@@ -30,6 +30,7 @@ def reconstruction_loss(y_true, model_out, w=None, alpha=0.0002):
     )
 
     if w is None:
+        warnings.warn("No memory matrix weights supplied! Calculating squared L2 loss without them.")
         # Calculate standard loss only
         return tf.reduce_mean(l2_norm)
 

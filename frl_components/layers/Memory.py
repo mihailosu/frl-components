@@ -1,5 +1,4 @@
 import tensorflow as tf
-# from tf_keras import layers
 from tensorflow.keras import layers
 from tensorflow.keras.utils import register_keras_serializable
 
@@ -8,6 +7,7 @@ class MemoryLayer(layers.Layer):
 
     def __init__(self, memory_dim, encoding_dim=None, lambda_cutoff=None, **kwargs):
         super(MemoryLayer, self).__init__(**kwargs)
+
         self.memory_dim = memory_dim
         self.lambda_cutoff = lambda_cutoff if lambda_cutoff else 1 / memory_dim
         self.encoding_dim = encoding_dim
@@ -50,8 +50,10 @@ class MemoryLayer(layers.Layer):
         # (batch_size, memory_dim) x (memory_dim, encoding_dim)
         output = tf.matmul(w, self.memory)
 
+        self.w = w
+
         # Return the outpus along with the weights used in the loss function
-        return output, w
+        return output
 
 
     def _compute_cosine_distance(self, inputs, memory):
@@ -94,3 +96,7 @@ class MemoryLayer(layers.Layer):
             "lambda_cutoff": self.lambda_cutoff,
         })
         return config
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)

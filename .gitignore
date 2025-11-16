@@ -22,3 +22,5 @@ data/
 !src/data
 
 .vscode/
+
+*.egg-info

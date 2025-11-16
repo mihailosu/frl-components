@@ -1,1 +1,1 @@
-from .encoders import MemoryAutoencoder
+from .encoders import MemoryAutoencoder, generate_mem_autoencoder

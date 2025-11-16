@@ -1,15 +1,53 @@
-
+import warnings
 import tensorflow as tf
-from tensorflow.keras import layers, Sequential, Model 
+from tensorflow.keras import layers, Sequential 
 from ..layers.Memory import MemoryLayer
 from tensorflow.keras.saving import register_keras_serializable
+
+def generate_mem_autoencoder(input_dim, memory_dim=None, encoding_dim=None, lambda_cutoff=None, layers_shape=None):
+    '''
+
+    Args:
+        memory_dim
+        encoding_dim 
+        lambda_cutoff
+        layers_shape - Describes the ENCODER layers. Example: [40, 20] 
+    '''
+    
+
+    encoder_layers = [layers.Input((input_dim,))]
+    decoder_layers = [layers.Input((encoding_dim,))]
+
+    memory = MemoryLayer(
+        memory_dim, 
+        encoding_dim=encoding_dim, 
+        lambda_cutoff=lambda_cutoff,
+        name="memory_layer"
+    )
+
+    for dim in layers_shape:
+        encoder_layers.append(layers.Dense(dim, activation='relu'))
+
+    encoder_layers.append(layers.Dense(encoding_dim, activation='relu'))
+
+    encoder = Sequential(encoder_layers, name="encoder")
+
+    for dim in reversed(layers_shape):
+        decoder_layers.append(layers.Dense(dim, activation='relu'))
+
+    decoder_layers.append(layers.Dense(input_dim, activation='relu'))
+
+    decoder = Sequential(decoder_layers, name="decoder")
+
+
+    return Sequential([encoder, memory, decoder])
 
 @register_keras_serializable()
 class MemoryAutoencoder(tf.keras.Model):
 
     def __init__(self, memory_dim=None, encoding_dim=None, lambda_cutoff=None, layer_strat='power', **kwargs):
         super(MemoryAutoencoder, self).__init__()
-
+        warnings.warn("Deprecated! Use 'generate_mem_autoencoder' function instead!")
         self.memory_dim = memory_dim if memory_dim else 32
         self.lambda_cutoff = lambda_cutoff
         self.encoding_dim = encoding_dim

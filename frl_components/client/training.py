@@ -11,10 +11,13 @@ def train_step(model, optimizer, x):
         # Forward pass
         out = model(x, training=True)
         if isinstance(out, tuple):
+            # [DEPRECATED] Old calculation, using MemoryAutoencoder class
             reconstructed, w = out
         else:
             reconstructed = out
-            w = None
+            if 'memory_layer' in [layer.name for layer in model.layers]:
+                w = model.get_layer('memory_layer').w
+                
         # Compute loss
         loss = reconstruction_loss(x, reconstructed, w=w)
 
