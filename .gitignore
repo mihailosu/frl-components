@@ -24,3 +24,5 @@ data/
 .vscode/
 
 *.egg-info
+**.swo
+**.swp

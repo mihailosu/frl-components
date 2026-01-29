@@ -10,6 +10,8 @@ from sklearn.metrics import roc_auc_score
 from ..models.util import persist_model
 from .validation import persist_validation_results, validate_autoencoder
 
+from apricot import FacilityLocationSelection
+
 class FedADStrategy(fl.server.strategy.FedProx):
     '''
     '''
@@ -145,6 +147,8 @@ class FedADStrategy(fl.server.strategy.FedProx):
             return self._top_n_by_distance(all_rows, N)
         elif self.memory_aggregation_method == 'greedy':
             return self._greedy_selection(all_rows, N)
+        elif self.memory_aggregation_method == 'facility_location':
+            return self._facility_location_selection(all_rows, N)
 
 
     def _random_vector_selection(self, all_memory_vectors, N) -> np.ndarray:
@@ -195,6 +199,14 @@ class FedADStrategy(fl.server.strategy.FedProx):
             selected_indices.append(next_index)
 
         return all_memory_vectors[selected_indices]
+
+
+    def _facility_location_selection(self, all_memory_vectors, N, distance_f='cosine') -> np.ndarray:
+        '''
+        Select the a subset of most informative vectors based on submodular optimization,
+        specifically, the Facility Location Selection method.
+        '''
+        return FacilityLocationSelection(N, metric=distance_f).fit_transform(all_memory_vectors)
 
 
 
