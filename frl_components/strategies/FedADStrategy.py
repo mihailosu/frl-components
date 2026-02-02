@@ -17,7 +17,7 @@ class FedADStrategy(fl.server.strategy.FedProx):
     '''
 
 
-    def __init__(self, data_loader, model_generator_fn, memory_aggregation_method=None, *args, **kwargs):
+    def __init__(self, data_loader, model_generator_fn, memory_aggregation_method=None, results_path=None, *args, **kwargs):
         '''
         
         Params:
@@ -33,6 +33,10 @@ class FedADStrategy(fl.server.strategy.FedProx):
 
         self.memory_aggregation_method = memory_aggregation_method
         self.validation_results = []
+
+        self.results_path = results_path
+
+        
 
 
     def aggregate_fit(
@@ -97,7 +101,11 @@ class FedADStrategy(fl.server.strategy.FedProx):
 
         experiment_name = f'{self.data_loader.experiment_name}-{self.memory_aggregation_method}'
 
-        persist_model(model, f'fedad_{server_round}', experiment_name)
+        results_path = self.results_path
+        if not results_path:
+            results_path = experiment_name
+
+        persist_model(model, f'fedad_{server_round}', results_path)
 
         validation_res = validate_autoencoder(model, X, y)
 
@@ -106,8 +114,7 @@ class FedADStrategy(fl.server.strategy.FedProx):
         self.validation_results.append(validation_res)
         print("Validation results: ", validation_res, "\n")
 
-
-        persist_validation_results(self.validation_results, experiment_name)
+        persist_validation_results(self.validation_results, results_path)
 
         return validation_res['roc_auc'], {}
 
