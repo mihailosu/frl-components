@@ -1,6 +1,8 @@
 import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow.keras.utils import register_keras_serializable
+# from tensorflow.initializers import GlorotUniform
+from tensorflow.keras.initializers import GlorotUniform
 
 @register_keras_serializable()
 class MemoryLayer(layers.Layer):
@@ -17,10 +19,11 @@ class MemoryLayer(layers.Layer):
 
         encoding_dim = self.encoding_dim if self.encoding_dim else input_shape[1]
 
+        kernel_init = GlorotUniform(seed=42)
         self.memory = self.add_weight(
             name='memory',
             shape=(self.memory_dim, encoding_dim),
-            initializer='glorot_uniform',
+            initializer=kernel_init,
             trainable=True)
 
 
@@ -32,7 +35,6 @@ class MemoryLayer(layers.Layer):
         '''
         # First compute the cosine distances
         distances = self._compute_cosine_distance(inputs, self.memory)
-
         # Second, apply softmax per row to have weights sum to 1 for each row
         w = tf.nn.softmax(distances, axis=-1)
 
