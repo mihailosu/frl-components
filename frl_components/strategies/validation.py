@@ -49,13 +49,13 @@ def iterate_thresholds(model_out, y):
     }
 
 
-def persist_validation_results(results, experiment_name):
+def persist_validation_results(results, results_path):
     import csv, os, datetime
 
     root_path = os.getcwd()
 
-    if experiment_name is not None:
-        final_path = os.path.join(root_path, "out", experiment_name)
+    if results_path is not None:
+        final_path = os.path.join(root_path, "out", results_path)
     else:
         final_path = os.path.join(root_path, "out", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
 
