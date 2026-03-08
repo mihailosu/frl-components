@@ -72,7 +72,11 @@ class FedADStrategy(fl.server.strategy.FedProx):
         params_agr, metrics_agr = super().aggregate_fit(server_round, results, failures)
         # print(fl.common.parameters_to_ndarrays(params_agr))
 
-        # if self.memory_aggregation_method is None or server_round % 5 == 1:
+        if params_agr:
+            # This converts the serialized Parameters back to float64 ndarrays
+            ndarrays = fl.common.parameters_to_ndarrays(params_agr)
+            ndarrays = [np.asarray(x, dtype=np.float64) for x in ndarrays]
+            params_agr = fl.common.ndarrays_to_parameters(ndarrays)
 
         should_skip_memory_agg = self.agg_memory_at_step is not None and server_round % self.agg_memory_at_step != 0
 
