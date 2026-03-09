@@ -62,6 +62,7 @@ class FedADStrategy(fl.server.strategy.FedProx):
         results: List[Tuple[ClientProxy, FitRes]],
         failures: List[BaseException],
     ):
+        self.server_round = server_round
         
         if len(results) == 0:
             return None, {}
@@ -213,7 +214,8 @@ class FedADStrategy(fl.server.strategy.FedProx):
         '''
         Random selection of memory vectors.
         '''
-        np.random.shuffle(all_memory_vectors)
+        rng = np.random.default_rng(seed=self.server_round)
+        rng.shuffle(all_memory_vectors)
         return all_memory_vectors[:N]
  
 
@@ -276,7 +278,7 @@ class FedADStrategy(fl.server.strategy.FedProx):
             n_clusters=N, 
             init='k-means++', 
             n_init=10, 
-            random_state=42
+            random_state=self.server_round
         )
         kmeans.fit(all_memory_vectors)
 
@@ -298,7 +300,7 @@ class FedADStrategy(fl.server.strategy.FedProx):
         Select the a subset of most informative vectors based on submodular optimization,
         specifically, the Facility Location Selection method.
         '''
-        return FacilityLocationSelection(N, metric=distance_f, random_state=42).fit_transform(all_memory_vectors)
+        return FacilityLocationSelection(N, metric=distance_f, random_state=self.server_round).fit_transform(all_memory_vectors)
 
 
     def _max_coverage_selection(self, all_memory_vectors, N, distance_f='cosine') -> np.ndarray:
