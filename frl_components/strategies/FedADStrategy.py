@@ -67,7 +67,8 @@ class FedADStrategy(fl.server.strategy.FedProx):
         if len(results) == 0:
             return None, {}
 
-        results.sort(key=lambda x: int(x[0].cid))
+        if 'client_id' in results[0][1].metrics.keys():
+            results.sort(key=lambda x: int(x[1].metrics['client_id']))
 
         # Aggregate metrics and params using FedProx        
         params_agr, metrics_agr = super().aggregate_fit(server_round, results, failures)
