@@ -11,6 +11,7 @@ from sklearn.preprocessing import normalize
 import pandas as pd
 
 from sklearn.metrics import roc_auc_score
+from sklearn_extra.cluster import KMedoids
 
 from ..models.util import persist_model, persist_memory
 from .validation import persist_validation_results, validate_autoencoder
@@ -209,6 +210,8 @@ class FedADStrategy(fl.server.strategy.FedProx):
             return self._sum_redundancy_selection(all_rows, N)
         elif self.memory_aggregation_method == 'kmeans':
             return self._kmeans_prototype_selection(all_rows, N)
+        elif self.memory_aggregation_method == 'kmedoids':
+            return self._kmedoids_prototype_selection(all_rows, N)
 
 
     def _random_vector_selection(self, all_memory_vectors, N) -> np.ndarray:
@@ -292,6 +295,35 @@ class FedADStrategy(fl.server.strategy.FedProx):
         # we push them back to the surface to maintain cosine similarity properties.
         if distance_f == 'cosine':
             global_memory_matrix = normalize(global_memory_matrix, axis=1)
+
+        return global_memory_matrix.astype(np.float32)  
+
+
+    def _kmedoids_prototype_selection(self, all_memory_vectors, N, distance_f='cosine') -> np.ndarray:
+        '''
+        Select a subset of N most informative vectors (prototypes) using K-Means clustering.
+        If distance_f is 'cosine', vectors are normalized to ensure centroids represent 
+        directional prototypes.
+        '''
+
+        # 2. Fit K-Means
+        # n_clusters=N means we want to find N representative prototypes
+        kmedoids = KMedoids(
+            n_clusters=N,
+            metric=distance_f,
+            random_state=42
+        )
+        kmedoids.fit(all_memory_vectors)
+
+        # 3. Get the Centroids
+        # These centroids are the new 'Global Memory Matrix' rows
+        global_memory_matrix = kmedoids.cluster_centers_
+
+        # 4. Re-normalize for Cosine Similarity (if necessary)
+        # Centroids of points on     a sphere are inside the sphere; 
+        # we push them back to the surface to maintain cosine similarity properties.
+        # if distance_f == 'cosine':
+        #     global_memory_matrix = normalize(global_memory_matrix, axis=1)
 
         return global_memory_matrix.astype(np.float32)  
 

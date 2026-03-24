@@ -8,7 +8,8 @@ setup(
         'tensorflow>=2.0',
         'flwr>=1.12.0',
         'scikit-learn==1.7.1',
-        'apricot-select>=0.6.1'
+        'apricot-select>=0.6.1',
+        'scikit-learn-extra==0.3.0'
     ],
     description="A custom model with an autoencoder and attention mechanism",
     long_description=open('README.md').read(),
