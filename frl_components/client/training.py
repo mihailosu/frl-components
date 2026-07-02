@@ -10,6 +10,7 @@ def train_step(model, optimizer, x):
     with tf.GradientTape() as tape:
         # Forward pass
         out = model(x, training=True)
+        w = None
         if isinstance(out, tuple):
             # [DEPRECATED] Old calculation, using MemoryAutoencoder class
             reconstructed, w = out
